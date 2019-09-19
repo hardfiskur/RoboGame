@@ -6,7 +6,7 @@ public class Player : MonoBehaviour
 {
     Rigidbody2D rb;
 
-    private float speed = 5;
+    private float speed = 4;
     public float input;
     // Start is called before the first frame update
     void Start()
