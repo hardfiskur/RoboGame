@@ -123,6 +123,7 @@ GameObject:
   - component: {fileID: 762229574}
   - component: {fileID: 762229573}
   - component: {fileID: 762229572}
+  - component: {fileID: 762229575}
   m_Layer: 0
   m_Name: Circle
   m_TagString: Untagged
@@ -208,6 +209,21 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &762229575
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 762229571}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd81dc0c77f650b4eac8a21572155c89, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mass: 1
+  soiRadius: 10
+  proximityModifier: 195
 --- !u!1 &1638164867
 GameObject:
   m_ObjectHideFlags: 0
@@ -219,11 +235,11 @@ GameObject:
   - component: {fileID: 1638164872}
   - component: {fileID: 1638164871}
   - component: {fileID: 1638164870}
-  - component: {fileID: 1638164869}
   - component: {fileID: 1638164868}
+  - component: {fileID: 1638164869}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: affectedByPlanetGravity
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -289,6 +305,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7be156e6d82815f4f86d037c6f844c81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  planet: {fileID: 762229574}
   input: 0
 --- !u!212 &1638164871
 SpriteRenderer:
@@ -346,7 +363,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1638164867}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.66, y: -1.92, z: 0}
+  m_LocalPosition: {x: 3.79, y: -2.46, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
