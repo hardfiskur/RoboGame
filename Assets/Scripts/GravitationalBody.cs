@@ -6,67 +6,10 @@ using System.Collections;
 public class GravitationalBody : MonoBehaviour {
  
 
-public float mass;     		
-	// The radius of the "sphere of influence" This can be set to infinity (or a very large number) for more realistic gravity.
-	public int soiRadius;	
-	// Used to alter (unatuarally) the coorelation between the proximity of the objects to the severity of the attraction.  Tweak to make orbits easier to achieve or more intersting.
-	public int proximityModifier = 195;	
 
-	// On init of obj
-	void Start() {
-		mass = mass * 100000; // Mass ^ 5 in order to allow the relative mass input to be more readable
-	}
-	
-	// Creates a visual representation of the sphere of influence in the editor
-	public void OnDrawGizmos() {
-		// Show the Object's Sphere Of Influence
-		Gizmos.DrawWireSphere (transform.position, soiRadius);
-	}
-	
-	void FixedUpdate () { // Runs continuously during gameplay
-
-		// Get all objects that will be affected by gravity (Game objects are tagged in order to be influenced by gravity)
-		GameObject[] objectsAffectedByGravity;
-        objectsAffectedByGravity = GameObject.FindGameObjectsWithTag ("affectedByPlanetGravity");
-		
-		foreach (GameObject gravBody in objectsAffectedByGravity) { // Iterate through objects affected by gravity
-				
-			Rigidbody2D gravRigidBody = gravBody.GetComponent<Rigidbody2D> (); // Get the object's Rigid Body Component
-			
-			float orbitalDistance = Vector3.Distance (transform.position, gravRigidBody.transform.position); // Get the object's distance from the World Body
-			
-			if (orbitalDistance < soiRadius) { // If the object is in the sphere of influence (close enough to be affected by the gravity of this object)
-
-				// Get info about the object in the sphere of influence
-
-				Vector3 objectOffset = transform.position - gravRigidBody.transform.position; // Get the object's 2d offset relative to this World Body
-				objectOffset.z = 0;
-				
-				Vector3 objectTrajectory = gravRigidBody.velocity; // Get object's trajectory vector
-				
-				float angle = Vector3.Angle (objectOffset, objectTrajectory); // Calculate object's angle of attack ( Not used here, but potentially insteresting to have )
-				
-				float magsqr = objectOffset.sqrMagnitude; // Square Magnitude of the object's offset
-				
-				if ( magsqr > 0.0001f ) { // If object's force is significant
-
-					// Apply gravitational force to the object
-					Vector3 gravityVector = ( mass * objectOffset.normalized / magsqr ) * gravRigidBody.mass;
-					gravRigidBody.AddForce ( gravityVector * ( orbitalDistance/proximityModifier) );
-					
-				}
-			} 
-		}
-	}
-
-
-
-
-
-/*public Transform player;
-private float gravitationalForce = 10;
-     private Vector3 directionOfplayerFromPlanet;
- 
+public Transform player;
+private float gravitationalForce = 100;
+private Vector3 directionOfplayerFromPlanet;
 void Start ()
 {
 directionOfplayerFromPlanet = Vector3.zero;
@@ -77,8 +20,8 @@ void FixedUpdate ()
 directionOfplayerFromPlanet = (transform.position-player.position).normalized;
 player.GetComponent<Rigidbody2D>().AddForce (directionOfplayerFromPlanet*gravitationalForce);    
 }
-
-
+}
+/*
     public float maxDistance;
     public float startingMass;
     public Vector2 initialVelocity;
@@ -136,6 +79,6 @@ player.GetComponent<Rigidbody2D>().AddForce (directionOfplayerFromPlanet*gravita
  
         return gravitationalForce;
        
-    }*/
-   
+    }
 }
+   */

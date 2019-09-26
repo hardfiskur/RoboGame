@@ -17,5 +17,6 @@ public class CameraControl : MonoBehaviour
     {
         transform.position = new Vector3(player.position.x + offset.x, 
         player.position.y + offset.y, offset.z -1);
+        transform.rotation = player.rotation;
     }
 }

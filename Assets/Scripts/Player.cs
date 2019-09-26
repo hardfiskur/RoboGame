@@ -5,33 +5,9 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     public Transform planet;
-    private float rotForce = 10;
+    private float rotForce = 4;
     private Vector3 plDirfromPlayer;
-    /*private bool allowForce;
-
-
-    void Start()
-    {
-        plDirfromPlayer = Vector3.zero;
-    }
- 
-    void Update ()
-    {
-    
-        allowForce = false;
-
-        if (Input.GetKey(KeyCode.Space))
-            allowForce = true;
-            plDirfromPlayer = transform.position - planet.position;
-            transform.right = Vector3.Cross(plDirfromPlayer, Vector3.forward);
-    }
-    
-    void FixedUpdate ()
-    {
-        if (allowForce)
-        rb.AddForce (transform.right * rotForce);
-    }*/
-Rigidbody2D rb;
+    Rigidbody2D rb;
 
     private float speed = 4;
     public float input;
@@ -46,18 +22,24 @@ Rigidbody2D rb;
     void Update(){
         plDirfromPlayer = transform.position - planet.position;
         transform.right = Vector3.Cross(plDirfromPlayer, Vector3.forward);
+        //transform.up = Vector3.Cross(plDirfromPlayer, Vector3.up);
     }
     void FixedUpdate()
     {
+
         // Storing Player Movement
         input = Input.GetAxisRaw("Horizontal");
 
 
         // Moving Player
-        rb.AddForce (input * transform.right * rotForce);
-        /*rb.velocity = new Vector2(input * speed, rb.velocity.y);
+        //rb.AddForce (input * transform.right * rotForce);
+        //if(input!=0)transform.position =  (input * transform.right * rotForce);
+        rb.velocity = input * transform.right * speed;
+        //rb.velocity = new Vector2(input * speed, rb.velocity.y);
         if(Input.GetKeyDown(KeyCode.Space)){
-            rb.velocity = new Vector2(0, 5);
-        }*/
+            //transform.GetComponent<Rigidbody2D>().AddForce(plDirfromPlayer*12,ForceMode2D.Impulse);
+            rb.AddForce(transform.up*1500);
+            //rb.velocity = transform.up*10;
+        }
     }
 }
