@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,7 +11,7 @@ public class Player : MonoBehaviour
     Rigidbody2D rb;
     float JumpVelocity;
     float JumpDampening=0.1f;   
-    private float speed = 4;
+    private float speed = 5;
     public float input;
     // Start is called before the first frame update
     void Start()
