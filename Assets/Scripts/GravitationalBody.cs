@@ -18,7 +18,8 @@ directionOfplayerFromPlanet = Vector3.zero;
 void FixedUpdate ()
 {
 directionOfplayerFromPlanet = (transform.position-player.position).normalized;
-player.GetComponent<Rigidbody2D>().AddForce (directionOfplayerFromPlanet*gravitationalForce);    
+player.GetComponent<Rigidbody2D>().AddForce (directionOfplayerFromPlanet*gravitationalForce);   
+
 }
 }
 /*

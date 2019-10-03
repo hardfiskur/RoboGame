@@ -13,11 +13,12 @@ public class Player : MonoBehaviour
     float JumpDampening=0.1f;   
     private float speed = 5;
     public float input;
+    public float time;
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        rb.gravityScale=0f;
+        rb.gravityScale=0;
     }
 
     // Update is called once per frame
@@ -25,11 +26,12 @@ public class Player : MonoBehaviour
         plDirfromPlayer = transform.position - planet.position;
         transform.right = Vector3.Cross(plDirfromPlayer, Vector3.forward);
         //transform.up = Vector3.Cross(plDirfromPlayer, Vector3.up);
+
     }
 
     void FixedUpdate()
     {
-        rb.velocity = new Vector2(8,rb.velocity.y);
+        //rb.velocity = new Vector2(8,rb.velocity.y);
         // Storing Player Movement
         input = Input.GetAxisRaw("Horizontal");
 
@@ -44,12 +46,19 @@ public class Player : MonoBehaviour
         }
     }
     void Jump(){
-        
+        time = 300f;
         //dir.y-=9.8f*Time.deltaTime;
         //rb.velocity=dir*55;
-        //rb.velocity = dir*35;
-        //rb.AddForce(dir*3500, ForceMode2D.Force);
-        transform.Translate(0, Time.deltaTime, 0, Space.World);
-        print(dir.y);
+        //rb.velocity = plDirfromPlayer*5;
+        rb.AddForce(plDirfromPlayer*-200);
+        /*while(time > 0){
+            //rb.velocity = plDirfromPlayer*15;
+            rb.AddForce(plDirfromPlayer*-200);
+            //time -= Time.deltaTime/5.0f;
+        }*/
+        //time = 0;
+        //transform.Translate(0, Time.deltaTime, 0, Space.World);
+        print(plDirfromPlayer);
+        print(dir);
     }
 }
