@@ -4,61 +4,90 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    Vector2 dir;
-    public Transform planet;
-    private float rotForce = 4;
-    private Vector3 plDirfromPlayer;
+    //Components
     Rigidbody2D rb;
-    float JumpVelocity;
-    float JumpDampening=0.1f;   
+    //Transforms
+    public Transform planet;
+    //Vectors
+    Vector2 dir;
+    private Vector3 plDirfromPlayer;
+    private Vector3 directionOfplayerFromPlanet;
+    //floats
+    private float gravitationalForce = 100;
+    float JumpVelocity; 
     private float speed = 5;
     public float input;
     public float time;
-    // Start is called before the first frame update
+    private float initailTime;
+    //bool
+    public bool istime;
+    public bool isjumping;
+    public bool inair;
+    
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         rb.gravityScale=0;
+        ResetTimer();
+        initailTime = time;
     }
 
-    // Update is called once per frame
-    void Update(){
+
+    void Update()
+    {
         plDirfromPlayer = transform.position - planet.position;
         transform.right = Vector3.Cross(plDirfromPlayer, Vector3.forward);
-        //transform.up = Vector3.Cross(plDirfromPlayer, Vector3.up);
-
+        
+        if(Input.GetKeyDown(KeyCode.Space)){
+            istime = true;
+            isjumping=true;
+            
+        }
+        //stops looping jump assoon as inair is true, hence not able to jump :I
+        Jump();
+        if(inair){Fly();}
     }
+    
 
     void FixedUpdate()
     {
-        //rb.velocity = new Vector2(8,rb.velocity.y);
-        // Storing Player Movement
+        
+        directionOfplayerFromPlanet = (planet.position-transform.position).normalized;
+        rb.AddForce (directionOfplayerFromPlanet*gravitationalForce);   
         input = Input.GetAxisRaw("Horizontal");
 
         dir = new Vector2(transform.up.x, transform.up.y);
-        // Moving Player
-        //rb.AddForce (input * transform.right * rotForce);
-        //if(input!=0)transform.position =  (input * transform.right * rotForce);
         rb.velocity = input * transform.right * speed;
-        //rb.velocity = new Vector2(input * speed, rb.velocity.y);
-        if(Input.GetKeyDown(KeyCode.Space)){
-            Jump();
-        }
+        
     }
     void Jump(){
-        time = 300f;
-        //dir.y-=9.8f*Time.deltaTime;
-        //rb.velocity=dir*55;
-        //rb.velocity = plDirfromPlayer*5;
-        rb.AddForce(plDirfromPlayer*-200);
-        /*while(time > 0){
-            //rb.velocity = plDirfromPlayer*15;
-            rb.AddForce(plDirfromPlayer*-200);
-            //time -= Time.deltaTime/5.0f;
-        }*/
-        //time = 0;
-        //transform.Translate(0, Time.deltaTime, 0, Space.World);
-        print(plDirfromPlayer);
-        print(dir);
+        
+        if(istime)
+        {
+            time-=Time.deltaTime;
+            gravitationalForce=-500;
+            inair=true;
+            if(time < initailTime*0.5)gravitationalForce=500;
+            if(time < 0){gravitationalForce=100;
+            istime=false;}
+        }
+    }
+    void Fly(){
+        if(Input.GetButton("Fire1")){
+            gravitationalForce=-200;
+        }
+        else{
+            gravitationalForce=100;
+        }
+    }
+    private void ResetTimer(){
+        time = 0.6f;
+    }
+    private void ResetFlyTimer(){
+
+    }
+
+    void OnCollisionEnter2D(Collision2D col){
+        if(col.gameObject.tag == "planet"){ResetTimer();istime=false; inair=false;}
     }
 }

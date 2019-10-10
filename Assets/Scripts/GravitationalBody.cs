@@ -7,7 +7,7 @@ public class GravitationalBody : MonoBehaviour {
  
 
 
-public Transform player;
+/*public Transform player;
 private float gravitationalForce = 100;
 private Vector3 directionOfplayerFromPlanet;
 void Start ()
@@ -83,3 +83,4 @@ player.GetComponent<Rigidbody2D>().AddForce (directionOfplayerFromPlanet*gravita
     }
 }
    */
+}
