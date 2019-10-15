@@ -13,7 +13,7 @@ public class Player : MonoBehaviour
     private Vector3 plDirfromPlayer;
     private Vector3 directionOfplayerFromPlanet;
     //floats
-    private float gravitationalForce = 100;
+    public float gravitationalForce = 100;
     float JumpVelocity; 
     private float speed = 5;
     public float input;
@@ -48,7 +48,6 @@ public class Player : MonoBehaviour
             isjumping = true;
             
         }
-        //stops looping jump assoon as inair is true, hence not able to jump :I
         Jump();
         //ef timer er minni en 0.1 sek er inair bool stillt á true, þetta er gerr svo að fly 
         //fallið keyri ekki strax og ýtt er á space oh leyfir því player að hoppa áður en er flogið
@@ -82,10 +81,9 @@ public class Player : MonoBehaviour
             //þegar tíminn er hálfnaður er gravity stillt á há plús tölu svo hann fari hratt niður 
             if(time < initailTime*0.5)gravitationalForce=500;
             //og eftir að player snertir plánetu er gravity stillt aftur á 100
-            istime=false;}
+            //if(time<0){istime=false;}
         }
     }
-    //work in progress
     void Fly(){
         if(Input.GetButton("Jump")){
             //gravity stillt á mínus 200 á meðan player er í lofti og space er haldið inni
@@ -100,12 +98,14 @@ public class Player : MonoBehaviour
     private void ResetTimer(){
         time = 0.6f;
     }
+    private void Defaults(){
+        istime=false; 
+        inair=false;
+        gravitationalForce=100;
+    }
 
     void OnCollisionEnter2D(Collision2D col){
         //þegar player snertir plánetu er timer endurstilltur
-        if(col.gameObject.tag == "planet"){ResetTimer();istime=false; inair=false;gravitationalForce=100;}
+        if(col.gameObject.tag == "planet"){ResetTimer();Defaults();}
     }
 }
-
-
-
