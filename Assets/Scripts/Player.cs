@@ -45,7 +45,7 @@ public class Player : MonoBehaviour
         }
         //stops looping jump assoon as inair is true, hence not able to jump :I
         Jump();
-        if(inair){Fly();}
+        //if(inair){Fly();}
     }
     
 
