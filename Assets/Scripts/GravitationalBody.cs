@@ -83,4 +83,4 @@ player.GetComponent<Rigidbody2D>().AddForce (directionOfplayerFromPlanet*gravita
     }
 }
    */
-}
+}//dir = new Vector2(transform.up.x, transform.up.y);
