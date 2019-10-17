@@ -57,6 +57,9 @@ public class Player : MonoBehaviour
         }
         Fly();
         Shieldd();
+        if(Input.GetKeyDown(KeyCode.Q)){
+            Application.Quit();
+        }
     }
     
 
