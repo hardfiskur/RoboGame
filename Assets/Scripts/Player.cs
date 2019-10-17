@@ -8,6 +8,7 @@ public class Player : MonoBehaviour
     Rigidbody2D rb;
     //Transforms
     public Transform planet;
+    public Transform shield;
     //Vectors
     Vector2 dir;
     private Vector3 plDirfromPlayer;
@@ -54,7 +55,8 @@ public class Player : MonoBehaviour
         if(time<(0.1f)){
             inair = true;
         }
-        if(inair){Fly();}
+        Fly();
+        Shieldd();
     }
     
 
@@ -85,13 +87,25 @@ public class Player : MonoBehaviour
         }
     }
     void Fly(){
-        if(Input.GetButton("Jump")){
-            //gravity stillt á mínus 200 á meðan player er í lofti og space er haldið inni
-            gravitationalForce=-200;
+        if(inair)
+        {
+            if(Input.GetButton("Jump")){
+                //gravity stillt á mínus 200 á meðan player er í lofti og space er haldið inni
+                gravitationalForce=-200;
+            }
+            else{
+                //ef space er sleppt dettur player niður með gravity í 400, en umleið og hann snertið plánetu er gravity stillt á 100
+                gravitationalForce=400;
+            }
+        }
+    }
+
+    void Shieldd(){
+        if(Input.GetKey(KeyCode.LeftShift)){
+            shield.gameObject.SetActive(true);
         }
         else{
-            //ef space er sleppt dettur player niður með gravity í 400, en umleið og hann snertið plánetu er gravity stillt á 100
-            gravitationalForce=400;
+            shield.gameObject.SetActive(true);
         }
     }
     //endurstilla timer
