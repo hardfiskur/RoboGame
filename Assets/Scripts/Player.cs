@@ -11,15 +11,16 @@ public class Player : MonoBehaviour
     public Transform shield;
     //Vectors
     Vector2 dir;
-    private Vector3 plDirfromPlayer;
-    private Vector3 directionOfplayerFromPlanet;
+    public Vector3 plDirfromPlayer;
+    public Vector3 directionOfplayerFromPlanet;
     //floats
     public float gravitationalForce = 100;
     float JumpVelocity; 
-    private float speed = 5;
+    public float speed = 5;
     public float input;
     public float time;
     private float initailTime;
+
     //bool
         //sumar óþarfa bool breytur fyrir testing
     public bool istime;
@@ -108,7 +109,7 @@ public class Player : MonoBehaviour
             shield.gameObject.SetActive(true);
         }
         else{
-            shield.gameObject.SetActive(true);
+            shield.gameObject.SetActive(false);
         }
     }
     //endurstilla timer
