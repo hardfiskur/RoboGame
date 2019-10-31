@@ -16,10 +16,12 @@ public class Player : MonoBehaviour
     //floats
     public float gravitationalForce = 100;
     float JumpVelocity; 
-    public float speed = 5;
+    public float speed = 14;
     public float input;
     public float time;
     private float initailTime;
+    private float deg;
+    public float testval1;
 
     //bool
         //sumar óþarfa bool breytur fyrir testing
@@ -50,6 +52,9 @@ public class Player : MonoBehaviour
             isjumping = true;
             
         }
+        if(deg < 20 && deg < 340)
+        deg -= 360;
+        //print(deg);
         Jump();
         //ef timer er minni en 0.1 sek er inair bool stillt á true, þetta er gerr svo að fly 
         //fallið keyri ekki strax og ýtt er á space oh leyfir því player að hoppa áður en er flogið
@@ -61,6 +66,7 @@ public class Player : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.Q)){
             Application.Quit();
         }
+        //print(FindDegree(transform.position.x,transform.position.y));
     }
     
 
@@ -69,11 +75,12 @@ public class Player : MonoBehaviour
         //Fær staðsetningu á player miðað við plánetu og ýtir svo player að plánetu
         directionOfplayerFromPlanet = (planet.position-transform.position).normalized;
         rb.AddForce (directionOfplayerFromPlanet*gravitationalForce);   
-
+        deg = FindDegree(transform.position.x,transform.position.y);
         //fær 1 eða -1 
         input = Input.GetAxisRaw("Horizontal");
         //labbar til vinstri eða hægri
         rb.velocity = input * transform.right * speed;
+        
         
     }
     void Jump(){
@@ -112,6 +119,14 @@ public class Player : MonoBehaviour
             shield.gameObject.SetActive(false);
         }
     }
+
+    public static float FindDegree(float x, float y){
+     float value = (float)((Mathf.Atan2(x, y) / Mathf.PI) * 180f);
+     if(value < 0) value += 360f;
+ 
+     return value;
+ }
+
     //endurstilla timer
     private void ResetTimer(){
         time = 0.6f;
