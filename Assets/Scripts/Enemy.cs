@@ -5,11 +5,13 @@ using System;
 
 public class Enemy : MonoBehaviour
 {
+
     //Components
     Rigidbody2D rb;
     //Transforms
     public Transform planet;
     public Transform player; 
+    public Transform cheatcol;
     //Vectors
     Vector2 dir;
     public Vector3 plDirfromPlayer;
@@ -18,14 +20,14 @@ public class Enemy : MonoBehaviour
     //floats
     public float gravitationalForce = 100;
     float JumpVelocity; 
-    private float speed = 10;
+    private float speed = 5;
     public float input;
     public float time;
     private float initailTime;
 
-    public float testval1;
-    public float testval2;
-    public float testval3;
+    public float p1;
+    public float e1;
+    public double testval3;
     private float plDeg;
     private float enDeg;
     //bool
@@ -33,6 +35,13 @@ public class Enemy : MonoBehaviour
     public bool istime;
     public bool isjumping;
     public bool inair;
+
+    public int pm = 1;
+
+
+    //TEST
+    private Quaternion qTo;
+    //TEST
     
     void Start()
     {
@@ -47,14 +56,23 @@ public class Enemy : MonoBehaviour
 
     void Update()
     {
+        /*Vector3 v3 = player.position - transform.position;
+        float angle = Mathf.Atan2(v3.y, v3.x) * Mathf.Rad2Deg;
+        qTo = Quaternion.AngleAxis (angle, Vector3.forward);
+                 //transform.rotation = Quaternion.RotateTowards (transform.rotation, qTo, rotationSpeed * Time.deltaTime);
+         transform.Translate (Vector3.right * speed * Time.deltaTime);*/
+
+
         //fær áttina sem player er frá plánetu
         plDirfromPlayer = transform.position - planet.position;
         playerEnDir = (transform.position - player.position).normalized;
         //svo player labbi ekki af plánetu
-        //transform.right = Vector3.Cross(plDirfromPlayer, Vector3.forward);
-        if(plDeg > 1 && plDeg < 359){
-        input = enDeg < plDeg ? 1 : -1;}
-        //print(enDeg-plDeg);
+        transform.right = Vector3.Cross(plDirfromPlayer, Vector3.forward);
+        /*if(plDeg > 1 && plDeg < 359){
+        input = enDeg < plDeg ? 1 : -1;}*/
+        print(testval3);
+        //input = Find2Degree(transform.position.x, transform.position.y, player.position.x, player.position.y) < plDeg ? 1 : -1;
+        
     }
     
 
@@ -72,20 +90,25 @@ public class Enemy : MonoBehaviour
         else{
             input = transform.rotation.z < player.rotation.z ? -1 : 1;
         }*/
-        testval1 = playerEnDir.x - playerEnDir.y;
-        testval2 = playerEnDir.x * playerEnDir.y;
-        testval3 = testval1+testval2;
-
-
-        print(Find2Degree(transform.position.x, transform.position.y, player.position.x, player.position.y));
+        testval3 = Vector2.Distance(player.position, transform.position)*pm;
+        if(testval3 < 0.259)print("000");
+        //input=(Vector2.Distance(player.position, transform.position)) < 24 ? 1 : -1;
+        input = testval3 < 0 ? 1 : -1;
+        //print(Find2Degree(transform.position.x, transform.position.y, player.position.x, player.position.y)); 
+        e1= (float)(Math.Atan2(transform.position.x,transform.position.y)/Math.PI) *180f;
+        p1= player.position.x*player.position.y;
+        //plDeg-=plDeg*2;
+        //testval3 = (Find2Degree(transform.position.x, transform.position.y, player.position.x, player.position.y)/360)*(2*Math.PI*0.5f);
+        //print ((Find2Degree(transform.position.x, transform.position.y, player.position.x, player.position.y)));
+        //print(Vector2.Distance(player.position, transform.position));
         //labbar til vinstri eða hægri
-        //rb.velocity = input * transform.right * speed;
+        rb.velocity = input * transform.right * speed;
         
     }
     public static float FindDegree(float x, float y)
     {
      float value = (float)((Mathf.Atan2(x, y) / Mathf.PI) * 180f);
-     if(value < 0) value += 360f;
+     //if(value < 0) value += 360f;
  
      return value;
     }
@@ -108,5 +131,9 @@ public class Enemy : MonoBehaviour
     void OnCollisionEnter2D(Collision2D col){
         //þegar player snertir plánetu er timer endurstilltur
         if(col.gameObject.tag == "planet"){ResetTimer();Defaults();}
+    }
+    void OnTriggerEnter2D(Collider2D col){
+        if (col.gameObject.tag == "Player")
+        pm=-1*pm;
     }
 }
