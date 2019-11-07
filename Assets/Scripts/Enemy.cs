@@ -70,39 +70,35 @@ public class Enemy : MonoBehaviour
         transform.right = Vector3.Cross(plDirfromPlayer, Vector3.forward);
         /*if(plDeg > 1 && plDeg < 359){
         input = enDeg < plDeg ? 1 : -1;}*/
-        print(testval3);
+        //print(testval3);
         //input = Find2Degree(transform.position.x, transform.position.y, player.position.x, player.position.y) < plDeg ? 1 : -1;
+
         
     }
     
 
     void FixedUpdate()
     {
-        //Fær staðsetningu á player miðað við plánetu og ýtir svo player að plánetu
+
         directionOfplayerFromPlanet = (planet.position-transform.position).normalized;
         rb.AddForce (directionOfplayerFromPlanet*gravitationalForce);   
         enDeg = FindDegree(transform.position.x,transform.position.y);
         plDeg = FindDegree(player.position.x, player.position.y);
-        //fær 1 eða -1 
-        /*if(transform.rotation.z > 0 && transform.rotation.z < 180){
-            input = transform.rotation.z > player.rotation.z ? 1 : -1;
-        }
-        else{
-            input = transform.rotation.z < player.rotation.z ? -1 : 1;
-        }*/
-        testval3 = Vector2.Distance(player.position, transform.position)*pm;
-        if(testval3 < 0.259)print("000");
+
+        testval3 = Vector2.Distance(player.position, transform.position);
+        //if(testval3 < 0.259)print("000");
         //input=(Vector2.Distance(player.position, transform.position)) < 24 ? 1 : -1;
-        input = testval3 < 0 ? 1 : -1;
+        input = testval3 < 10 ? 1 : -1;
         //print(Find2Degree(transform.position.x, transform.position.y, player.position.x, player.position.y)); 
         e1= (float)(Math.Atan2(transform.position.x,transform.position.y)/Math.PI) *180f;
-        p1= player.position.x*player.position.y;
+        p1= (float)(Math.Atan2(player.position.x,player.position.y)/Math.PI) *180f;
+        print((Find2Degree(transform.position.x, transform.position.y, player.position.x, player.position.y)));
         //plDeg-=plDeg*2;
         //testval3 = (Find2Degree(transform.position.x, transform.position.y, player.position.x, player.position.y)/360)*(2*Math.PI*0.5f);
         //print ((Find2Degree(transform.position.x, transform.position.y, player.position.x, player.position.y)));
         //print(Vector2.Distance(player.position, transform.position));
-        //labbar til vinstri eða hægri
-        rb.velocity = input * transform.right * speed;
+
+        //rb.velocity = input * transform.right * speed;
         
     }
     public static float FindDegree(float x, float y)
@@ -132,8 +128,10 @@ public class Enemy : MonoBehaviour
         //þegar player snertir plánetu er timer endurstilltur
         if(col.gameObject.tag == "planet"){ResetTimer();Defaults();}
     }
-    void OnTriggerEnter2D(Collider2D col){
-        if (col.gameObject.tag == "Player")
+    /* void OnTriggerExit2D(Collider2D col){
+        if (col.gameObject.name == "Player"){
+            print("T");
         pm=-1*pm;
-    }
+        }
+    }*/
 }
