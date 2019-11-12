@@ -80,7 +80,15 @@ public class Player : MonoBehaviour
         input = Input.GetAxisRaw("Horizontal");
         //labbar til vinstri eða hægri
         rb.velocity = input * transform.right * speed;
-        
+
+        //print(FindDegree(transform.position.x, transform.position.y));
+        print(transform.position);
+        if(transform.position.y < 0){
+            print("A");
+            float tX = -1*transform.position.x;
+            transform.position = new Vector3(tX,0.5f,0);
+        }
+
         
     }
     void Jump(){
