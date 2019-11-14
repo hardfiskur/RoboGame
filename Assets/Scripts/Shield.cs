@@ -4,9 +4,11 @@ using UnityEngine;
 
 public class Shield : MonoBehaviour
 {
-public Transform player;
+private Transform player;
 public Vector3 playerToMouseDir;
 public float armLength = 0.67f;
+
+//Enemy enemy = new Enemy(); 
  void Start() {
      // if the sword is child object, this is the transform of the character (or player)
      player = transform.parent.transform;
@@ -17,6 +19,7 @@ public float armLength = 0.67f;
      playerToMouseDir.z = 0; 
      transform.position = player.position + (armLength * playerToMouseDir.normalized);
      float angle = Mathf.Atan2(playerToMouseDir.y, playerToMouseDir.x) * Mathf.Rad2Deg;
-        transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+    transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
  }
+
 }

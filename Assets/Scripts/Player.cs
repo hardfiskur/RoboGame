@@ -28,6 +28,7 @@ public class Player : MonoBehaviour
     public bool istime;
     public bool isjumping;
     public bool inair;
+    private bool shieldActive = true;
     
     void Start()
     {
@@ -82,7 +83,6 @@ public class Player : MonoBehaviour
         rb.velocity = input * transform.right * speed;
 
         //print(FindDegree(transform.position.x, transform.position.y));
-        print(transform.position);
         if(transform.position.y < 0){
             print("A");
             float tX = -1*transform.position.x;
@@ -122,9 +122,11 @@ public class Player : MonoBehaviour
     void Shieldd(){
         if(Input.GetKey(KeyCode.LeftShift)){
             shield.gameObject.SetActive(true);
+            shieldActive = true;
         }
         else{
             shield.gameObject.SetActive(false);
+            shieldActive = false;
         }
     }
 
@@ -135,6 +137,7 @@ public class Player : MonoBehaviour
      return value;
  }
 
+public bool ShieldStat{get{return shieldActive;}}
     //endurstilla timer
     private void ResetTimer(){
         time = 0.6f;
