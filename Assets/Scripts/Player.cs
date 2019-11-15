@@ -67,6 +67,7 @@ public class Player : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.Q)){
             Application.Quit();
         }
+        //print(plDirfromPlayer);
         //print(FindDegree(transform.position.x,transform.position.y));
     }
     
@@ -83,12 +84,12 @@ public class Player : MonoBehaviour
         rb.velocity = input * transform.right * speed;
 
         //print(FindDegree(transform.position.x, transform.position.y));
-        if(transform.position.y < 0){
+        /*if(transform.position.y < 0){
             print("A");
             float tX = -1*transform.position.x;
             transform.position = new Vector3(tX,0.5f,0);
-        }
-
+        }*/
+        //print(directionOfplayerFromPlanet);
         
     }
     void Jump(){
@@ -136,12 +137,16 @@ public class Player : MonoBehaviour
  
      return value;
  }
-
-public bool ShieldStat{get{return shieldActive;}}
+//getter og setter test
+public bool ShieldStat{
+    set{shieldActive=false;}
+    get{return shieldActive;}
+    }
     //endurstilla timer
     private void ResetTimer(){
         time = 0.6f;
     }
+    
     private void Defaults(){
         istime=false; 
         inair=false;

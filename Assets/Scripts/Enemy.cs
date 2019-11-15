@@ -15,14 +15,14 @@ public class Enemy : MonoBehaviour
     //Vectors
     Vector2 dir;
     public Vector3 plDirfromPlayer;
-    public Vector3 directionOfplayerFromPlanet;
+    public Vector3 dirplanetPlayer;
+    public Vector3 dirplanetEnemy;
     public Vector3 playerEnDir;
     //floats
     public float gravitationalForce = 100;
     float JumpVelocity; 
     private int _speed = 5;
     public float input;
-    public float time;
     private float initailTime;
     
     public float p1;
@@ -37,11 +37,17 @@ public class Enemy : MonoBehaviour
     public bool isjumping;
     public bool inair;
     
-    public int pm = 1;
+    public bool pm;
+
+    Vector3 plPos;
+    Vector3 enPos;
 
 
     //TEST
     Player playerClass = new Player();
+
+
+    public bool tst;
     //TEST
     
     void Start()
@@ -49,15 +55,18 @@ public class Enemy : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         rb.gravityScale=0;
         //stilla timer í byrjun
-        ResetTimer();
-        //auðveldar stillingu timer
-        initailTime = time;
         initialSpeed = _speed;
     }
 
 
     void Update()
     {
+        //finna gráður á player og enemy
+        enDeg = FindDegree(enPos.x, enPos.y);
+        plDeg = FindDegree(plPos.x, plPos.y);
+        
+        //float diff = (enDeg + plDeg) % 360;
+
         //fær áttina sem player er frá plánetu
         plDirfromPlayer = transform.position - planet.position;
         playerEnDir = (transform.position - player.position).normalized;
@@ -65,56 +74,86 @@ public class Enemy : MonoBehaviour
         transform.right = Vector3.Cross(plDirfromPlayer, Vector3.forward);  
         //_speed = initialSpeed;
         if(playerClass.ShieldStat == false){
+            print("FASDF");
+            if(tst == true){
             _speed = initialSpeed;
+            tst=false;
         }
+        }
+        plPos = player.position;
+        enPos = transform.position;
+        float dist = (Vector2.Distance(player.position, transform.position));
+        //float dist = Mathf.Sqrt(Math.Abs(Mathf.Pow(2,(enPos.x - plPos.x))-Mathf.Pow(2,(enPos.y-plPos.y))));
+        //float theta = Mathf.Acos(1-((Mathf.Pow(2, dist))/((Mathf.Pow(2,(2*25))))));
+        //print((Vector2.Distance(player.position, transform.position)*Math.PI));
+        //print(diff);
+        //print(enDeg+plDeg);
+
+        //print(angle(enDeg, plDeg));
+        //180.0 - std::fabs(std::fmod(std::fabs(first - second), 360.0) - 180.0);
+        //print(enDeg);
+        //print(Math.Abs((Mathf.Abs(enDeg + plDeg) % 360.0) - 180.0));
+        bool over = dist > 14.6f ? true : false;
+        float angle = Mathf.MoveTowardsAngle(transform.eulerAngles.y, plDeg, enDeg * Time.deltaTime);
+        
+        //print(dist+"==="+over);
+        //transform.position = Vector2.MoveTowards((transform.position, player.position, _speed * Time.deltaTime));
+        //print((transform.position, player.position, _speed * Time.deltaTime));
         
         
-    }
-    void LateUpadte()
-    {
-        _speed = initialSpeed;
     }
     
 
     void FixedUpdate()
     {
 
-        directionOfplayerFromPlanet = (planet.position-transform.position).normalized;
-        rb.AddForce (directionOfplayerFromPlanet*gravitationalForce);   
-
+        dirplanetPlayer = (planet.position-player.position).normalized;
+        dirplanetEnemy = (planet.position-transform.position).normalized;
+        rb.AddForce (dirplanetEnemy*gravitationalForce);   
+        pm = (dirplanetEnemy.x+dirplanetEnemy.y) < (dirplanetPlayer.x+dirplanetPlayer.y) ? true : false;
         e1= (float)(Math.Atan2(transform.position.x,transform.position.y)/Math.PI) *180f;
         p1= (float)(Math.Atan2(player.position.x,player.position.y)/Math.PI) *180f;
-        input= e1 < p1 ? 1 : -1;
-       
+        //input= e1 < p1 ? 1 : -1;
+
+
+
+
+    //eins og stendur fær enemy annað hvort 1 eða -1 í input eftir því hvort gráður eru minni eða meiri.
+    //þetta virkar þar til gráður fara frá 0 í 360 eða öfugt. Þá í stað þess að elta player yfir þann punkt fer
+    //enemy frekar í öfuga átt í heilan hring þar sem samkvæmt gráðum er það styttra...
+       input = enDeg < plDeg ? 1 : -1;
+
+
+
         rb.velocity = input * (_speed * transform.right);
-        if(transform.position.y < 0){
+        /*if(transform.position.y < 0){
             float tX = -1*transform.position.x;
             transform.position = new Vector3(tX,0.5f,0);
-        }  
-            
-            //print(_speed);
+        }*/ 
+        
+        //print(dirplanetPlayer.x+dirplanetPlayer.y);
+        //if(player)
+
+
     }
 
 
 
 
-    //endurstilla timer
-    private void ResetTimer(){
-        time = 0.6f;
+    void OnTriggerEnter2D(Collider2D col){
+    if(col.gameObject.tag == "shield"){col.isTrigger = false;}//_speed = 0;tst=true;}
     }
-    private void Defaults(){
-        istime=false; 
-        inair=false;
-        gravitationalForce=100;
+    void OnTriggerExit2D(Collider2D col){
+    if(col.gameObject.tag == "shield"){col.isTrigger = true;}//_speed = 0;tst=true;}
     }
 
-    void OnCollisionEnter2D(Collision2D col){
-        //þegar player snertir plánetu er timer endurstilltur
-        if(col.gameObject.tag == "planet"){ResetTimer();Defaults();}
-    }
-    void OnTriggerStay2D(Collider2D col){
-    if(col.gameObject.tag == "shield"){_speed = 0;}
-    }
+
+       public static float FindDegree(float x, float y){
+     float value = (float)((Mathf.Atan2(x, y) / Mathf.PI) * 180f);
+     if(value < 0) value += 360f;
+ 
+     return value;
+ }
     
 }
 
