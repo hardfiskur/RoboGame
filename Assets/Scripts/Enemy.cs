@@ -118,10 +118,20 @@ public class Enemy : MonoBehaviour
 
 
 
+    
     //eins og stendur fær enemy annað hvort 1 eða -1 í input eftir því hvort gráður eru minni eða meiri.
     //þetta virkar þar til gráður fara frá 0 í 360 eða öfugt. Þá í stað þess að elta player yfir þann punkt fer
     //enemy frekar í öfuga átt í heilan hring þar sem samkvæmt gráðum er það styttra...
-       input = enDeg < plDeg ? 1 : -1;
+
+    //input = enDeg < plDeg ? 1 : -1;
+
+
+    //Náði að láta þetta virka næstum fullkomlega! nú þegar enemy og player eru á sama y eða x ás að þá er reiknað út
+    //hvort x eða y(öfugt við ás sem enemy og player eru á) á enemy sé meira eða minna en hjá player
+        if(enPos.y > 0 && plPos.y > 0)input = enPos.x < plPos.x ? 1 : -1;
+        else if(enPos.y < 0 && plPos.y < 0) input = enPos.x > plPos.x ? 1 : -1;
+        else if(enPos.x > 0 && plPos.x > 0) input = enPos.y > plPos.y ? 1 : -1;
+        else if(enPos.x < 0 && plPos.x < 0) input = enPos.y < plPos.y ? 1 : -1;
 
 
 
