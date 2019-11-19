@@ -74,6 +74,8 @@ public class Player : MonoBehaviour
 
     void FixedUpdate()
     {
+        print(WrapAngle(transform.localEulerAngles.z));
+        //WrapAngle(transform.euler)
         //Fær staðsetningu á player miðað við plánetu og ýtir svo player að plánetu
         directionOfplayerFromPlanet = (planet.position-transform.position).normalized;
         rb.AddForce (directionOfplayerFromPlanet*gravitationalForce);   
@@ -124,10 +126,12 @@ public class Player : MonoBehaviour
         if(Input.GetKey(KeyCode.LeftShift)){
             shield.gameObject.SetActive(true);
             shieldActive = true;
+            transform.gameObject.name = "PlayerT";
         }
         else{
             shield.gameObject.SetActive(false);
             shieldActive = false;
+            transform.gameObject.name = "Player";
         }
     }
 
@@ -139,8 +143,8 @@ public class Player : MonoBehaviour
  }
 //getter og setter test
 public bool ShieldStat{
-    set{shieldActive=false;}
-    get{return shieldActive;}
+    get{if(shieldActive)return true;else return false;}
+    set{shieldActive = false;}
     }
     //endurstilla timer
     private void ResetTimer(){
@@ -157,4 +161,12 @@ public bool ShieldStat{
         //þegar player snertir plánetu er timer endurstilltur
         if(col.gameObject.tag == "planet"){ResetTimer();Defaults();}
     }
+    private static float WrapAngle(float angle)
+        {
+            angle%=360;
+            if(angle >180)
+                return angle - 360;
+ 
+            return angle;
+        }
 }
