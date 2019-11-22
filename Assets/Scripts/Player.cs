@@ -74,7 +74,8 @@ public class Player : MonoBehaviour
 
     void FixedUpdate()
     {
-        print(WrapAngle(transform.localEulerAngles.z));
+        //print(transform.position.x+transform.position.y);
+        //print(WrapAngle(transform.localEulerAngles.z));
         //WrapAngle(transform.euler)
         //Fær staðsetningu á player miðað við plánetu og ýtir svo player að plánetu
         directionOfplayerFromPlanet = (planet.position-transform.position).normalized;

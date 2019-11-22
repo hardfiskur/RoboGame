@@ -36,8 +36,12 @@ public class Enemy : MonoBehaviour
     public bool istime;
     public bool isjumping;
     public bool inair;
-    
+    public bool pa,pb,pc,pd;
+    public bool ea,eb,ec,ed;
     public bool pm;
+
+    private bool[] pSlice = new bool[4];
+    private bool[] eSlice = new bool[4];
 
     Vector3 plPos;
     Vector3 enPos;
@@ -85,23 +89,6 @@ public class Enemy : MonoBehaviour
         }
         plPos = player.position;
         enPos = transform.position;
-        float dist = (Vector2.Distance(player.position, transform.position));
-        //float dist = Mathf.Sqrt(Math.Abs(Mathf.Pow(2,(enPos.x - plPos.x))-Mathf.Pow(2,(enPos.y-plPos.y))));
-        //float theta = Mathf.Acos(1-((Mathf.Pow(2, dist))/((Mathf.Pow(2,(2*25))))));
-        //print((Vector2.Distance(player.position, transform.position)*Math.PI));
-        //print(diff);
-        //print(enDeg+plDeg);
-
-        //print(angle(enDeg, plDeg));
-        //180.0 - std::fabs(std::fmod(std::fabs(first - second), 360.0) - 180.0);
-        //print(enDeg);
-        //print(Math.Abs((Mathf.Abs(enDeg + plDeg) % 360.0) - 180.0));
-        bool over = dist > 14.6f ? true : false;
-        float angle = Mathf.MoveTowardsAngle(transform.eulerAngles.y, plDeg, enDeg * Time.deltaTime);
-        
-        //print(dist+"==="+over);
-        //transform.position = Vector2.MoveTowards((transform.position, player.position, _speed * Time.deltaTime));
-        //print((transform.position, player.position, _speed * Time.deltaTime));
         
         
     }
@@ -109,47 +96,48 @@ public class Enemy : MonoBehaviour
 
     void FixedUpdate()
     {
+        
 
+        
         dirplanetPlayer = (planet.position-player.position).normalized;
         dirplanetEnemy = (planet.position-transform.position).normalized;
         rb.AddForce (dirplanetEnemy*gravitationalForce);   
-        pm = (dirplanetEnemy.x+dirplanetEnemy.y) < (dirplanetPlayer.x+dirplanetPlayer.y) ? true : false;
+        //pm = (dirplanetEnemy.x+dirplanetEnemy.y) < (dirplanetPlayer.x+dirplanetPlayer.y) ? true : false;
         e1= (float)(Math.Atan2(transform.position.x,transform.position.y)/Math.PI) *180f;
         p1= (float)(Math.Atan2(player.position.x,player.position.y)/Math.PI) *180f;
         //input= e1 < p1 ? 1 : -1;
 
 
 
+    //print(Mathf.Abs(WrapAngle(player.localEulerAngles.z)));
 
-    input=WrapAngle(transform.localEulerAngles.z)>WrapAngle(player.localEulerAngles.z)?1:-1;
-    //eins og stendur fær enemy annað hvort 1 eða -1 í input eftir því hvort gráður eru minni eða meiri.
-    //þetta virkar þar til gráður fara frá 0 í 360 eða öfugt. Þá í stað þess að elta player yfir þann punkt fer
-    //enemy frekar í öfuga átt í heilan hring þar sem samkvæmt gráðum er það styttra...
+        pa=plPos.x>0 && plPos.y<0?true:false;
+        pb=plPos.x<0 && plPos.y<0?true:false;
+        pc=plPos.x<0 && plPos.y>0?true:false;
+        pd=plPos.x>0 && plPos.y>0?true:false;
+        pSlice[0]=pa;pSlice[1]=pb;pSlice[2]=pc;pSlice[3]=pd;
+        ea=enPos.x>0 && enPos.y<0?true:false;
+        eb=enPos.x<0 && enPos.y<0?true:false;
+        ec=enPos.x<0 && enPos.y>0?true:false;
+        ed=enPos.x>0 && enPos.y>0?true:false;
+        eSlice[0]=ea;eSlice[1]=eb;eSlice[2]=ec;eSlice[3]=ed;
 
-    //input = enDeg < plDeg ? 1 : -1;
+        //if(pSlice[])
 
+        
+        for(int i=0; i<4;i++){
+            int k1 = i+1;
+            int k2 = i-1;
+            k1=k1>3?0:k1;
+            k2=k2<0?3:k2;
+            if(pSlice[i] && eSlice[k2])input=1;
+            else if(pSlice[i] && eSlice[k1])input=-1;
 
-    //Náði að láta þetta virka næstum fullkomlega! nú þegar enemy og player eru á sama y eða x ás að þá er reiknað út
-    //hvort x eða y(öfugt við ás sem enemy og player eru á) á enemy sé meira eða minna en hjá player
-             /*if(enPos.y > 0 && plPos.y > 0)input = enPos.x < plPos.x ? 1 : -1;
-             
-        else if(enPos.y < 0 && plPos.y < 0) input = enPos.x > plPos.x ? 1 : -1;
-        //else if(enPos.y < 0 && enPos.x > 0 && plPos.y < 0 && plPos.x > 0)input = enPos.x < plPos.x ? 1 : -1;
+            if(pSlice[i]==eSlice[i])input= enDeg<plDeg?1:-1;
+        }
 
-        else if(enPos.x > 0 && plPos.x > 0) input = enPos.y > plPos.y ? 1 : -1;
-        else if(enPos.x < 0 && plPos.x < 0) input = enPos.y < plPos.y ? 1 : -1;*/
-
-        //depending on which slice player is on. set all other slices 
 
         rb.velocity = input * (_speed * transform.right);
-        /*if(transform.position.y < 0){
-            float tX = -1*transform.position.x;
-            transform.position = new Vector3(tX,0.5f,0);
-        }*/ 
-        
-        //print(dirplanetPlayer.x+dirplanetPlayer.y);
-        //if(player)
-
 
     }
 
@@ -187,7 +175,7 @@ public class Enemy : MonoBehaviour
             if(angle >180)
                 return angle - 360;
  
-            return angle;
+            return Mathf.Abs(angle);
         }
     
 }

@@ -1813,6 +1813,14 @@ MonoBehaviour:
   istime: 0
   isjumping: 0
   inair: 0
+  pa: 0
+  pb: 0
+  pc: 0
+  pd: 0
+  ea: 0
+  eb: 0
+  ec: 0
+  ed: 0
   pm: 1
   tst: 0
 --- !u!50 &1475275353
