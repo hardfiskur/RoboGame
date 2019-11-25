@@ -15,7 +15,6 @@ public class Enemy : MonoBehaviour
     //Vectors
     Vector2 dir;
     public Vector3 plDirfromPlayer;
-    public Vector3 dirplanetPlayer;
     public Vector3 dirplanetEnemy;
     public Vector3 playerEnDir;
     //floats
@@ -23,22 +22,10 @@ public class Enemy : MonoBehaviour
     float JumpVelocity; 
     private int _speed = 5;
     public float input;
-    private float initailTime;
     
-    public float p1;
-    public float e1;
-    public double testval3;
     private float plDeg;
     private float enDeg;
     private int initialSpeed;
-    //bool
-        //sumar óþarfa bool breytur fyrir testing
-    public bool istime;
-    public bool isjumping;
-    public bool inair;
-    public bool pa,pb,pc,pd;
-    public bool ea,eb,ec,ed;
-    public bool pm;
 
     private bool[] pSlice = new bool[4];
     private bool[] eSlice = new bool[4];
@@ -66,63 +53,32 @@ public class Enemy : MonoBehaviour
 
     void Update()
     {
-        //print(Mathf.Abs(Find2Degree(enPos.x,enPos.y,plPos.x,plPos.y)));//change name on trigger?
-        //AltTrigger(player);
-        playerClass = new Player();
+        //playerClass = new Player();
         //finna gráður á player og enemy
         enDeg = FindDegree(enPos.x, enPos.y);
         plDeg = FindDegree(plPos.x, plPos.y);
-        
-        //float diff = (enDeg + plDeg) % 360;
-        //fær áttina sem player er frá plánetu
         plDirfromPlayer = transform.position - planet.position;
         playerEnDir = (transform.position - player.position).normalized;
-        //svo player labbi ekki af plánetu
         transform.right = Vector3.Cross(plDirfromPlayer, Vector3.forward);  
         //_speed = initialSpeed;
-        if(playerClass.ShieldStat == false){
-            print("FASDF");
+        /*if(playerClass.ShieldStat == false){
             if(tst == true){
-            _speed = initialSpeed;
-            tst=false;
-        }
-        }
+                _speed = initialSpeed;
+                tst=false;
+            }
+        }*/
         plPos = player.position;
         enPos = transform.position;
-        
-        
     }
     
 
     void FixedUpdate()
     {
-        
-
-        
-        dirplanetPlayer = (planet.position-player.position).normalized;
         dirplanetEnemy = (planet.position-transform.position).normalized;
         rb.AddForce (dirplanetEnemy*gravitationalForce);   
-        //pm = (dirplanetEnemy.x+dirplanetEnemy.y) < (dirplanetPlayer.x+dirplanetPlayer.y) ? true : false;
-        e1= (float)(Math.Atan2(transform.position.x,transform.position.y)/Math.PI) *180f;
-        p1= (float)(Math.Atan2(player.position.x,player.position.y)/Math.PI) *180f;
-        //input= e1 < p1 ? 1 : -1;
 
-
-
-    //print(Mathf.Abs(WrapAngle(player.localEulerAngles.z)));
-
-        pa=plPos.x>0 && plPos.y<0?true:false;
-        pb=plPos.x<0 && plPos.y<0?true:false;
-        pc=plPos.x<0 && plPos.y>0?true:false;
-        pd=plPos.x>0 && plPos.y>0?true:false;
-        pSlice[0]=pa;pSlice[1]=pb;pSlice[2]=pc;pSlice[3]=pd;
-        ea=enPos.x>0 && enPos.y<0?true:false;
-        eb=enPos.x<0 && enPos.y<0?true:false;
-        ec=enPos.x<0 && enPos.y>0?true:false;
-        ed=enPos.x>0 && enPos.y>0?true:false;
-        eSlice[0]=ea;eSlice[1]=eb;eSlice[2]=ec;eSlice[3]=ed;
-
-        //if(pSlice[])
+        Slices(pSlice,plPos);
+        Slices(eSlice,enPos);
 
         
         for(int i=0; i<4;i++){
@@ -140,9 +96,6 @@ public class Enemy : MonoBehaviour
         rb.velocity = input * (_speed * transform.right);
 
     }
-
-
-
 
     void OnTriggerStay2D(Collider2D col){
     if(col.gameObject.tag == "shield"){_speed = 0;}//_speed = 0;tst=true;}
@@ -178,5 +131,15 @@ public class Enemy : MonoBehaviour
             return Mathf.Abs(angle);
         }
     
+
+static void Slices(bool[] arr,Vector3 pos){
+    
+    arr[0]=pos.x>0 && pos.y<0?true:false;
+    arr[1]=pos.x<0 && pos.y<0?true:false;
+    arr[2]=pos.x<0 && pos.y>0?true:false;
+    arr[3]=pos.x>0 && pos.y>0?true:false;
 }
+
+}
+
 
