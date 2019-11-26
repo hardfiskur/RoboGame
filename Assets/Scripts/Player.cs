@@ -22,13 +22,15 @@ public class Player : MonoBehaviour
     private float initailTime;
     private float deg;
     public float testval1;
+    //int
+    public static int energy = 100;
 
     //bool
         //sumar óþarfa bool breytur fyrir testing
     public bool istime;
     public bool isjumping;
     public bool inair;
-    private bool shieldActive = true;
+    public static bool shieldActive = true;
     
     void Start()
     {
@@ -67,16 +69,15 @@ public class Player : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.Q)){
             Application.Quit();
         }
-        //print(plDirfromPlayer);
-        //print(FindDegree(transform.position.x,transform.position.y));
+        
+        
+        
     }
     
 
     void FixedUpdate()
     {
-        //print(transform.position.x+transform.position.y);
-        //print(WrapAngle(transform.localEulerAngles.z));
-        //WrapAngle(transform.euler)
+        energy=Clamp(energy, 0, 100);
         //Fær staðsetningu á player miðað við plánetu og ýtir svo player að plánetu
         directionOfplayerFromPlanet = (planet.position-transform.position).normalized;
         rb.AddForce (directionOfplayerFromPlanet*gravitationalForce);   
@@ -85,15 +86,11 @@ public class Player : MonoBehaviour
         input = Input.GetAxisRaw("Horizontal");
         //labbar til vinstri eða hægri
         rb.velocity = input * transform.right * speed;
-
-        //print(FindDegree(transform.position.x, transform.position.y));
-        /*if(transform.position.y < 0){
-            print("A");
-            float tX = -1*transform.position.x;
-            transform.position = new Vector3(tX,0.5f,0);
-        }*/
-        //print(directionOfplayerFromPlanet);
         
+    }
+    void LateUpdate()
+    {
+        energy += 1;
     }
     void Jump(){
         
@@ -112,27 +109,29 @@ public class Player : MonoBehaviour
     void Fly(){
         if(inair)
         {
-            if(Input.GetButton("Jump")){
+            if(Input.GetButton("Jump")&&energy>1){
                 //gravity stillt á mínus 200 á meðan player er í lofti og space er haldið inni
                 gravitationalForce=-200;
+                energy-=2;
             }
             else{
                 //ef space er sleppt dettur player niður með gravity í 400, en umleið og hann snertið plánetu er gravity stillt á 100
                 gravitationalForce=400;
             }
         }
+        //else energy+=1;
     }
 
     void Shieldd(){
-        if(Input.GetKey(KeyCode.LeftShift)){
+        if(Input.GetKey(KeyCode.LeftShift)&&energy>0){
             shield.gameObject.SetActive(true);
             shieldActive = true;
-            transform.gameObject.name = "PlayerT";
+            energy-=2;
         }
         else{
             shield.gameObject.SetActive(false);
             shieldActive = false;
-            transform.gameObject.name = "Player";
+            //energy+=1;
         }
     }
 
@@ -147,6 +146,9 @@ public bool ShieldStat{
     get{if(shieldActive)return true;else return false;}
     set{shieldActive = false;}
     }
+public int GetEnergy{
+    get{return energy;}
+}
     //endurstilla timer
     private void ResetTimer(){
         time = 0.6f;
@@ -162,12 +164,8 @@ public bool ShieldStat{
         //þegar player snertir plánetu er timer endurstilltur
         if(col.gameObject.tag == "planet"){ResetTimer();Defaults();}
     }
-    private static float WrapAngle(float angle)
-        {
-            angle%=360;
-            if(angle >180)
-                return angle - 360;
- 
-            return angle;
-        }
+    public static int Clamp( int value, int min, int max )
+    {
+        return (value < min) ? min : (value > max) ? max : value;
+    }
 }

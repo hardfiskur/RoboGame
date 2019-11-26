@@ -74,14 +74,18 @@ public class Enemy : MonoBehaviour
 
     void FixedUpdate()
     {
+        //Gravity
         dirplanetEnemy = (planet.position-transform.position).normalized;
         rb.AddForce (dirplanetEnemy*gravitationalForce);   
 
+        //2 array halda utan um á hvorum hluta tungls er staðið á
+        //tunglinu er hægt að skipta á fjóra hluta eftir því hvort x og y er mínus eða plús [(-x,y)(x,y)(x,-y)(-x,-y)]
         Slices(pSlice,plPos);
         Slices(eSlice,enPos);
 
-        
+        //fundið út hvort player er hægra eða vinstra meigin við enemy
         for(int i=0; i<4;i++){
+            //ef array[slot + 1] er true þá fer enemy til hægri, sama ef slot - 1 er true nema þá til vinstri
             int k1 = i+1;
             int k2 = i-1;
             k1=k1>3?0:k1;
@@ -92,11 +96,11 @@ public class Enemy : MonoBehaviour
             if(pSlice[i]==eSlice[i])input= enDeg<plDeg?1:-1;
         }
 
-
+        //
         rb.velocity = input * (_speed * transform.right);
-
+       
     }
-
+    
     void OnTriggerStay2D(Collider2D col){
     if(col.gameObject.tag == "shield"){_speed = 0;}//_speed = 0;tst=true;}
     }
@@ -104,41 +108,29 @@ public class Enemy : MonoBehaviour
     if(col.gameObject.tag == "shield"){_speed = initialSpeed;}//_speed = 0;tst=true;}
     }
 
+    //reiknar gráðu player/enemy á tungli
+    public static float FindDegree(float x, float y){
+        float value = (float)((Mathf.Atan2(x, y) / Mathf.PI) * 180f);
+        if(value < 0) value += 360f;
 
-       public static float FindDegree(float x, float y){
-     float value = (float)((Mathf.Atan2(x, y) / Mathf.PI) * 180f);
-     if(value < 0) value += 360f;
- 
-     return value;
- }
+        return value;
+    }
 
- void LateUpdate()
- {
-     if(player.gameObject.name == "Player")_speed = initialSpeed;
- }
-  public static float Find2Degree(float x2, float y2, float x1, float y1){
-     float value = (float)(Math.Atan((y1 - y2) / (x1 - x2)) * (180 / Mathf.PI));
-         
- 
-     return value;
- }
- private static float WrapAngle(float angle)
-        {
-            angle%=360;
-            if(angle >180)
-                return angle - 360;
- 
-            return Mathf.Abs(angle);
-        }
+    void LateUpdate()
+    {
+        if(!Player.shieldActive)_speed = initialSpeed;
+    }
+
+
     
-
-static void Slices(bool[] arr,Vector3 pos){
-    
-    arr[0]=pos.x>0 && pos.y<0?true:false;
-    arr[1]=pos.x<0 && pos.y<0?true:false;
-    arr[2]=pos.x<0 && pos.y>0?true:false;
-    arr[3]=pos.x>0 && pos.y>0?true:false;
-}
+//uppfærir array
+    static void Slices(bool[] arr,Vector3 pos){
+        
+        arr[0]=pos.x>0 && pos.y<0?true:false;
+        arr[1]=pos.x<0 && pos.y<0?true:false;
+        arr[2]=pos.x<0 && pos.y>0?true:false;
+        arr[3]=pos.x>0 && pos.y>0?true:false;
+    }
 
 }
 
