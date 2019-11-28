@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
+using System;
 
 public class Player : MonoBehaviour
 {
@@ -23,7 +25,7 @@ public class Player : MonoBehaviour
     private float deg;
     public float testval1;
     //int
-    public static int energy = 100;
+    public static float energy = 100;
 
     //bool
         //sumar óþarfa bool breytur fyrir testing
@@ -31,9 +33,15 @@ public class Player : MonoBehaviour
     public bool isjumping;
     public bool inair;
     public static bool shieldActive = true;
+        //bool array til að gá hvort energy má endurnýja sig
+    private bool[] allowed = new bool[2];
     
     void Start()
-    {
+    {   
+        for (int i = 0; i < allowed.Length; i++)
+        {
+            allowed[i] = true;
+        }
         rb = GetComponent<Rigidbody2D>();
         rb.gravityScale=0;
         //stilla timer í byrjun
@@ -77,6 +85,7 @@ public class Player : MonoBehaviour
 
     void FixedUpdate()
     {
+        if(allowed.All(x => x))energy += 1;
         energy=Clamp(energy, 0, 100);
         //Fær staðsetningu á player miðað við plánetu og ýtir svo player að plánetu
         directionOfplayerFromPlanet = (planet.position-transform.position).normalized;
@@ -90,8 +99,8 @@ public class Player : MonoBehaviour
     }
     void LateUpdate()
     {
-        energy += 1;
-    }
+        // * Time.deltaTime;
+    } 
     void Jump(){
         
         if(istime)
@@ -108,15 +117,19 @@ public class Player : MonoBehaviour
     }
     void Fly(){
         if(inair)
-        {
+        {   
+            if(Input.GetKey(KeyCode.Space)){energy-=1;
+                allowed[0] = false;}
+
             if(Input.GetButton("Jump")&&energy>1){
                 //gravity stillt á mínus 200 á meðan player er í lofti og space er haldið inni
                 gravitationalForce=-200;
-                energy-=2;
+                
             }
             else{
                 //ef space er sleppt dettur player niður með gravity í 400, en umleið og hann snertið plánetu er gravity stillt á 100
                 gravitationalForce=400;
+                allowed[0]=true;
             }
         }
         //else energy+=1;
@@ -126,12 +139,14 @@ public class Player : MonoBehaviour
         if(Input.GetKey(KeyCode.LeftShift)&&energy>0){
             shield.gameObject.SetActive(true);
             shieldActive = true;
-            energy-=2;
+            energy-=1;
+            allowed[1]=false;
         }
         else{
             shield.gameObject.SetActive(false);
             shieldActive = false;
             //energy+=1;
+            allowed[1]=true;
         }
     }
 
@@ -141,14 +156,8 @@ public class Player : MonoBehaviour
  
      return value;
  }
-//getter og setter test
-public bool ShieldStat{
-    get{if(shieldActive)return true;else return false;}
-    set{shieldActive = false;}
-    }
-public int GetEnergy{
-    get{return energy;}
-}
+
+
     //endurstilla timer
     private void ResetTimer(){
         time = 0.6f;
@@ -164,7 +173,7 @@ public int GetEnergy{
         //þegar player snertir plánetu er timer endurstilltur
         if(col.gameObject.tag == "planet"){ResetTimer();Defaults();}
     }
-    public static int Clamp( int value, int min, int max )
+    public static float Clamp( float value, float min, float max )
     {
         return (value < min) ? min : (value > max) ? max : value;
     }
